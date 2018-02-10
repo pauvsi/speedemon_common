@@ -13,7 +13,7 @@ function [carLength, noise, position_theta, position_x, position_y, velocity, st
     position_theta = position_theta + delta_theta * delta_time;
 
     %actual vector
-    ackermannVector = [position_x, position_y, cos(position_theta), sin(position_theta)];
+    %ackermannVector = [position_x, position_y, cos(position_theta), sin(position_theta)];
 
     quiver(position_x, position_y, cos(position_theta), sin(position_theta));
     xlim([-10 10]);
