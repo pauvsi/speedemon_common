@@ -1,5 +1,4 @@
-function [carLength, noise, position_theta, position_x, position_y, velocity, steering_angle] = acerkmannSim(paramVector)
-
+function [carLength, noise, position_theta, position_x, position_y, velocity, steering_angle] = ackermannSim(paramVector)
   %some params
   
   carLength =  paramVector(1); %meters
