@@ -1,5 +1,6 @@
 function runSim()
     %params
+    close all
     carLength = 0.4;
     noise = 0;
     position_theta = 0;
@@ -9,9 +10,9 @@ function runSim()
     %velocity
     velocity = 2; %m/s rear
     steering_angle = pi/10; %rads
-    dt = .05;
+    dt = 0.05;
 
-    for t = 0:1000
+    for t = 0:100
         [carLength, noise, position_theta, position_x, position_y, velocity, steering_angle] = ackermannSim(carLength, noise, position_theta, position_x, position_y, velocity, steering_angle, dt);
         
 %         if(mod(t,2) == 0)
