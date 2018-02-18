@@ -1,31 +1,38 @@
-function [globalState] = ackermannSim(desiredControlVector, mass, carLength, globalState, dt)
+function [globalState] = ackermannSim(desiredControlVector, globalState, dt,mass, carLength)
     
-    %globalState = [x, y, dx, dy, T, phi) 
+    %globalState = [x, y, theta, dx, dy, T, phi) 
     %desiredControlVector = [T, phi]
-    globalState(5) = globalState(5) + 0.98 * (desiredControlVector(1) - globalState(5)); %T, x, T
-    globalState(6) = globalState(6) + 0.5 * (desiredControlVector(2) - globalState(6)); %phi, Y, phi
+    globalState(6) = globalState(6) + 0.98 * (desiredControlVector(1) - globalState(6)); %T, x, T
+    globalState(7) = globalState(7) + 0.5 * (desiredControlVector(2) - globalState(7)); %phi, Y, phi
     
-    theta = atan2(globalState(4), globalState(3)); % intertial dy, dx
+    r = carLength / tan(globalState(7)); %turn radius (denom is phi)
+    
+    theta = globalState(3);
+    
     R = [cos(theta) , -sin(theta); sin(theta) , cos(theta)]; %rotation matrix from inertial coordinate frame to body coordinate frame
-    
-    r = carLength / tan(globalState(6); %turn radius (denom is phi)
     
     if (abs(r) < 1.1)
       r = 1.1;
     end
     
-    if (globalState(5) < -20)
-      globalState(5) = -20;
+    if (globalState(6) < -20)
+      globalState(6) = -20;
     end
     
-    if (globalState(5) > 20)
-      globalState(5) = 20;
+    if (globalState(6) > 20)
+      globalState(6) = 20;
     end
       
-    intertialAcceleration = R([globalState(5) / mass; 0] + [0 ; globalState(3)^2 / r);
+    bv = R' * globalState(4:5, 1);
+      
+    bay = bv(1)^2 / r;
     
-    globalState(1:2, 1) = globalState(1:2, 1) + dt * globalState(3:4, 1) + 0.5 * dt * dt * inertialAcceleration;
-    globalState(3:4, 1) = globalState(3:4, 1) + intertialAcceleration * dt;
+    globalState(3) = globalState(3) + sqrt(bay * r) * dt; %angluar vel update
+    
+    acci = R * ([globalState(6) / mass; 0] + [0 ; bay])
+    
+    globalState(1:2, 1) = globalState(1:2, 1) + dt * globalState(4:5, 1) + 0.5 * dt * dt * acci;
+    globalState(4:5, 1) = globalState(4:5, 1) + acci * dt;
   
 end
   

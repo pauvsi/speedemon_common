@@ -1,25 +1,28 @@
-function runSim()
+
     %params
     carLength = 0.4;
-    noise = 0;
-    position_theta = 0;
-    position_x = 0;
-    position_y = 0;
-    mass = 50;
-    T = 1;
-    state = [position_x,position_y];
-    
+    mass = 4;
+    global_state = [1, 1, 0, 0, 0, 0, 0]'; %x y theta dx dy ax ay
+    dt = 0.01;
+    integral = zeros(2, 1);
 
-    %velocity
-    velocity = -2; %m/s rear
-    steering_angle = pi/4; %rads
-    dt = 0.05;
-
-    for t = 0:100
-        [mass, carLength, noise, position_theta, state, velocity, steering_angle] = ackermannSim(carLength, mass, noise, position_theta, state, velocity, steering_angle, dt);
+    for t = 0:dt:10
         
-        xlim([-10 10]);
-        ylim([-10 10]);
+        desired_state = [1.5, 1, 0, 0, 0, 0, 0]'; % x y theta bdx bdy bax bay
+        
+        T = 0;
+        phi = 0;
+        
+        est_state = sense(global_state)
+        
+        [T, phi, integral] = controller(dt, integral, est_state, desired_state);
+        
+        [global_state] = ackermannSim([T;phi], global_state, dt, mass, carLength)        
+
+  
+        quiver(global_state(1, 1), global_state(2, 1), cos(global_state(3)), sin(global_state(3)))
+ 
+        xlim([0 5]);
+        ylim([0 5]);
         drawnow;
     end
-end

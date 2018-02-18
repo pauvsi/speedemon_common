@@ -28,21 +28,24 @@ function [T, phi, integral] = controller(dt, integral, est_state, desired_state)
     error_dot = [desired_state(4); desired_state(5)] - [est_state(4); est_state(5)];
     
     %gain coefficients
-    K_P = [0.1, 0; 0, 0.1];
-    K_D = [0.1, 0; 0, 0.1];
-    K_i = [0.1, 0; 0, 0.1];
+    K_P = [1, 0; 
+            0, 1];
+    K_D = [0.4, 0;
+           0, 0.4];
+    K_i = [0, 0; 
+          0, 0];
 
     integral = integral + error * dt; %updates integral term
     
-    output = [desired_state(6); desired_state(7)] + K_P * error + K_i * integral + K_D * error_dot
+    output = [desired_state(6); desired_state(7)] + K_P * error + K_i * integral + K_D * error_dot;
     
     radius = 0;
     
     %if centripetal acceleration is 0
     if(output(2) == 0)
-        radius = 1e12
+        radius = 1e12;
     else
-        radius = est_state(4)^2/output(2)
+        radius = est_state(4)^2/output(2);
     end
     
     T = mass * output(1); %thrust
