@@ -27,7 +27,8 @@ function [globalState] = ackermannSim(desiredControlVector, globalState, dt,mass
       
     bay = bv(1)^2 / r;
     
-    globalState(3) = globalState(3) + sqrt(bay * r) * dt; %angluar vel update
+    %globalState(3) = globalState(3) + sqrt(bay * r) * dt; %angluar vel update
+    globalState(3) = globalState(3) + (globalState(4) / r) * dt;
     
     acci = R * ([globalState(6) / mass; 0] + [0 ; bay])
     
